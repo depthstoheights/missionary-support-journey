@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Missionary Support Journey - Depths to Heights</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            color: #333;
+        }
+        
+        .screen {
+            display: none;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.3s;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #764ba2;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #667eea;
+            font-size: 22px;
+            margin: 15px 0;
+        }
+        
+        h3 {
+            color: #555;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-success {
+            background: #10b981;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .nav-btn.active {
+            color: #667eea;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .audio-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #764ba2;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 1001;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .progress-bar {
+            background: #e5e7eb;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #10b981, #667eea);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.3s;
+        }
+        
+        .thermometer {
+            width: 80px;
+            height: 250px;
+            margin: 20px auto;
+            background: #e5e7eb;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .thermometer-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, #ef4444, #f59e0b, #10b981);
+            transition: height 0.3s;
+        }
+        
+        .thermometer-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #333;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .verse-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .verse-text {
+            font-size: 18px;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .verse-ref {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .stat-card {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .prayer-item {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border-left: 3px solid #667eea;
+        }
+        
+        .module-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .module-card:hover {
+            background: #f3f4f6;
+            transform: translateX(5px);
+        }
+        
+        .tab-container {
+            display: flex;
+            gap: 5px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .tab-btn {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            animation: slideIn 0.3s;
+        }
+        
+        .message-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .message-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .resource-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .resource-content p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <button class="audio-toggle" id="audioBtn">🎵</button>
+    
+    <!-- Home Screen -->
+    <div class="screen active" id="home-screen">
+        <div class="header">
+            <h1>Missionary Support Journey</h1>
+            <p>Your faith-filled partner in support raising</p>
+        </div>
+        
+        <div class="verse-card">
+            <div class="verse-text" id="daily-verse">
+                "And my God will meet all your needs according to the riches of his glory in Christ Jesus."
+            </div>
+            <div class="verse-ref" id="verse-ref">Philippians 4:19</div>
+        </div>
+        
+        <div class="card">
+            <h2>Support Progress</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="support-progress" style="width: 0%">0%</div>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-raised">$0</div>
+                    <div class="stat-label">Raised</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-goal">$5000</div>
+                    <div class="stat-label">Goal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-partners">0</div>
+                    <div class="stat-label">Partners</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-prayers">0</div>
+                    <div class="stat-label">Prayers</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Quick Actions</h3>
+            <button class="btn" onclick="showScreen('tracker-screen')">Update Support</button>
+            <button class="btn btn-secondary" onclick="showScreen('training-screen')">Training Modules</button>
+            <button class="btn btn-success" onclick="showScreen('prayer-screen')">Prayer Wall</button>
+        </div>
+        
+        <div class="card">
+            <h3>Recent Prayer Requests</h3>
+            <div id="recent-prayers">
+                <p style="color: #999;">No prayer requests yet. Visit the Prayer Wall!</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Crisis Screen -->
+    <div class="screen" id="crisis-screen">
+        <div class="header">
+            <h1>Crisis Support</h1>
+        </div>
+        
+        <div class="card" style="border: 2px solid #ef4444; background: #fef2f2;">
+            <h2>Immediate Support</h2>
+            <p>If you are in crisis, please contact your local helpline for immediate support.</p>
+            <br>
+            <h3>Emergency Missionary Care:</h3>
+            <ul style="line-height: 2; margin-left: 20px;">
+                <li><strong>Barnabas International:</strong> 704-849-2773</li>
+                <li><strong>Link Care Center:</strong> 559-439-2647</li>
+                <li><strong>YWAM Member Care:</strong> Contact your base leader</li>
+            </ul>
+        </div>
+        
+        <div class="verse-card">
+            <div class="verse-text">
+                "Come to me, all you who are weary and burdened, and I will give you rest."
+            </div>
+            <div class="verse-ref">Matthew 11:28</div>
+        </div>
+        
+        <button class="btn btn-secondary" onclick="showScreen('home-screen')">Back to Dashboard</button>
+    </div>
+    
+    <!-- Resources Screen -->
+    <div class="screen" id="resources-screen">
+        <div class="header">
+            <h1>Mission Resources</h1>
+        </div>
+        
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="showResourceTab('books')">Books</button>
+            <button class="tab-btn" onclick="showResourceTab('articles')">Articles</button>
+            <button class="tab-btn" onclick="showResourceTab('tools')">Tools</button>
+            <button class="tab-btn" onclick="showResourceTab('templates')">Templates</button>
+        </div>
+        
+        <div class="tab-content active" id="books-tab">
+            <div class="card">
+                <h3>📚 Essential Support Raising Books</h3>
+                <div class="resource-content">
+                    <div class="module-card">
+                        <h4>The God Ask - Steve Shadrach</h4>
+                        <p><strong>7-Step Biblical Process:</strong> Begin with Prayer → Map your Network → Secure Appointments → Conduct Visits → Track Progress → Say Thank You → Report Results</p>
+                        <p>Includes 200+ Bible verses on provision. Used by YWAM, Cru, and Wycliffe worldwide. Transform fundraising from begging to ministry.</p>
+                    </div>
+                    <div class="module-card">
+                        <h4>Funding Your Ministry - Scott Morton</h4>
+                        <p>50+ years of Navigators wisdom. Covers creating funding plans, overcoming rejection fear, writing appeals, maintaining relationships.</p>
+                        <p><strong>Key chapter:</strong> "What to do when support drops" - invaluable for crisis times.</p>
+                    </div>
+                    <div class="module-card">
+                        <h4>Friend Raising - Betty Barnett (YWAM)</h4>
+                        <p>The 6 I's: Identify → Introduce → Inform → Involve → Invest → Invite</p>
+                        <p>Real YWAM stories. Addresses cross-cultural support and working with churches.</p>
+                    </div>
+                    <div class="module-card">
+                        <h4>People Raising - William Dillon</h4>
+                        <p>Jesus' 6-step model. Worksheets for calculating real needs including taxes, retirement. Section on tent-making ministry. Used by SIM, AIM, OMF.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="articles-tab">
+            <div class="card">
+                <h3>📝 Practical Guides</h3>
+                <div class="resource-content">
+                    <div class="module-card">
+                        <h4>Newsletter Formula from Wycliffe</h4>
+                        <p>70% one main story, 20% quick updates, 10% prayer requests. Use photos with faces. Write at 8th grade level. Send monthly minimum. Subject lines under 50 characters.</p>
+                    </div>
+                    <div class="module-card">
+                        <h4>The Support Letter That Raised $50,000</h4>
+                        <p>Opening: Share specific vision. Middle: Transformation story. Include 3 prayer needs. Clear financial breakdown. Multiple giving options. Closing with deadline.</p>
+                    </div>
+                    <div class="module-card">
+                        <h4>Building Your Prayer Shield</h4>
+                        <p>Inner Circle: 3-5 daily intercessors. Middle Circle: 10-20 weekly. Outer Circle: unlimited monthly. Use WhatsApp for updates. Monthly Zoom prayers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="tools-tab">
+            <div class="card">
+                <h3>🛠️ Practical Tools</h3>
+                <div class="resource-content">
+                    <div class="module-card">
+                        <h4>Real Support Calculator</h4>
+                        <p><strong>Include:</strong> Salary + Housing + Food + Transport + Insurance + Ministry expenses + Kids education + Home assignment (10%) + Emergency (3 months) + Retirement (10-15%) + Taxes</p>
+                        <p><strong>Average:</strong> Single: $2,500-4,000/month. Family: $5,000-8,000/month. Add 20% buffer.</p>
+                    </div>
+                    <div class="module-card">
+                        <h4>The 100 Names List</h4>
+                        <p>Family + Church + School + Work + Neighbors + Social + Professional + Online + Parents' contacts + Christmas cards = 300+ names → 100 partners</p>
+                    </div>
+                    <div class="module-card">
+                        <h4>Support Drop Emergency Protocol</h4>
+                        <p>Day 1: Pray. Day 2-7: Contact top 10 donors. Week 2: Urgent update to all. Week 3: Contact church. Week 4: Consider options. Remember: drops are usually temporary.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="templates-tab">
+            <div class="card">
+                <h3>📋 Ready Templates</h3>
+                <div class="resource-content">
+                    <div class="module-card">
+                        <h4>Initial Support Letter</h4>
+                        <p>Dear [Name],</p>
+                        <p>I'm writing with exciting news! God has called me to [country/ministry]. [Share 2-3 sentence calling story]. I'll be [specific activities] to serve [who].</p>
+                        <p>I need [X] partners at $50-100/month to reach $[total] by [date]. Would you prayerfully consider joining my team?</p>
+                        <p>Three ways to partner: 1) Pray regularly 2) Give monthly 3) Share with others</p>
+                        <p>Can we meet [give 2 options]?</p>
+                        <p>Gratefully, [Name]</p>
+                    </div>
+                    <div class="module-card">
+                        <h4>Thank You Template</h4>
+                        <p>Dear [Name], Your gift of $[amount] is overwhelming! You're not just giving money - you're partnering in [specific impact]. Because of you, [specific outcome]. How can I pray for you?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="btn btn-secondary" onclick="showScreen('home-screen')">Back to Dashboard</button>
+    </div>
+    
+    <!-- Training Screen -->
+    <div class="screen" id="training-screen">
+        <div class="header">
+            <h1>Support Training Modules</h1>
+        </div>
+        
+        <div class="module-card" onclick="openModule(0)">
+            <h3>📖 Biblical Basis for Support</h3>
+            <p>God's economy of partnership - 10 min</p>
+        </div>
+        
+        <div class="module-card" onclick="openModule(1)">
+            <h3>✍️ Write Your Story</h3>
+            <p>Craft compelling testimony - 8 min</p>
+        </div>
+        
+        <div class="module-card" onclick="openModule(2)">
+            <h3>👥 Build Partner Team</h3>
+            <p>Develop lasting relationships - 12 min</p>
+        </div>
+        
+        <div class="module-card" onclick="openModule(3)">
+            <h3>💬 Keep Partners Engaged</h3>
+            <p>Maintain connections - 10 min</p>
+        </div>
+        
+        <div class="module-card" onclick="openModule(4)">
+            <h3>💪 Overcome Fear</h3>
+            <p>Handle rejection - 8 min</p>
+        </div>
+        
+        <button class="btn btn-secondary" onclick="showScreen('home-screen')">Back to Dashboard</button>
+    </div>
+    
+    <!-- Module Screen -->
+    <div class="screen" id="module-screen">
+        <div class="header">
+            <h1 id="module-title">Module</h1>
+        </div>
+        
+        <div class="card" id="module-content">
+            <p>Content loads here</p>
+        </div>
+        
+        <div class="card">
+            <h3>Journal</h3>
+            <textarea id="journal" rows="4" placeholder="Take notes..."></textarea>
+            <button class="btn" onclick="saveJournal()">Save</button>
+        </div>
+        
+        <button class="btn btn-secondary" onclick="showScreen('training-screen')">Back</button>
+    </div>
+    
+    <!-- Tracker Screen -->
+    <div class="screen" id="tracker-screen">
+        <div class="header">
+            <h1>Support Tracker</h1>
+        </div>
+        
+        <div class="card">
+            <h2>Faith Thermometer</h2>
+            <div class="thermometer">
+                <div class="thermometer-fill" id="thermo-fill" style="height: 0%"></div>
+                <div class="thermometer-label" id="thermo-label">0%</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Add Support</h3>
+            <label>Name</label>
+            <input type="text" id="supporter-name" placeholder="John Smith">
+            
+            <label>Type</label>
+            <select id="support-type">
+                <option value="monthly">Monthly</option>
+                <option value="onetime">One-Time</option>
+                <option value="prayer">Prayer Only</option>
+            </select>
+            
+            <label>Amount</label>
+            <input type="number" id="support-amount" placeholder="100">
+            
+            <button class="btn" onclick="addSupport()">Add</button>
+        </div>
+        
+        <div class="card">
+            <h3>Set Goal</h3>
+            <input type="number" id="goal-input" placeholder="5000" value="5000">
+            <button class="btn" onclick="setGoal()">Update</button>
+        </div>
+        
+        <div id="supporters-list"></div>
+        
+        <button class="btn btn-secondary" onclick="showScreen('home-screen')">Back</button>
+    </div>
+    
+    <!-- Prayer Screen -->
+    <div class="screen" id="prayer-screen">
+        <div class="header">
+            <h1>Prayer Wall</h1>
+        </div>
+        
+        <div class="card">
+            <h3>Post Prayer</h3>
+            <label>Name</label>
+            <input type="text" id="prayer-name" placeholder="Anonymous">
+            
+            <label>Request</label>
+            <textarea id="prayer-request" rows="3"></textarea>
+            
+            <button class="btn" onclick="addPrayer()">Post</button>
+        </div>
+        
+        <div id="prayer-wall"></div>
+        
+        <button class="btn btn-secondary" onclick="showScreen('home-screen')">Back</button>
+    </div>
+    
+    <!-- Info Modal -->
+    <div class="modal" id="info-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('info-modal')">×</button>
+            <h2>App Info</h2>
+            <p>Equips missionaries to raise support through biblical principles.</p>
+            <h3>Features</h3>
+            <ul>
+                <li>Support tracking</li>
+                <li>Training modules</li>
+                <li>Prayer wall</li>
+                <li>Resources library</li>
+            </ul>
+            <h3>Install</h3>
+            <p>iPhone: Share → Add to Home</p>
+            <p>Android: Menu → Add to Home</p>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div class="modal" id="about-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('about-modal')">×</button>
+            <h2>Depths to Heights</h2>
+            <h3>Made by Justin</h3>
+            <p>Website: depthstoheights.org</p>
+            <p>Email: depthstoheights@gmail.com</p>
+            <button class="btn" onclick="window.open('https://www.paypal.com/donate/?hosted_button_id=8GRE7B8C3TP2U', '_blank')">Donate via PayPal</button>
+        </div>
+    </div>
+    
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <button class="nav-btn active" onclick="navTo('home-screen', this)">
+            <span class="nav-icon">🏠</span>
+            Home
+        </button>
+        <button class="nav-btn" onclick="navTo('crisis-screen', this)">
+            <span class="nav-icon">🆘</span>
+            Crisis
+        </button>
+        <button class="nav-btn" onclick="navTo('resources-screen', this)">
+            <span class="nav-icon">📚</span>
+            Resources
+        </button>
+        <button class="nav-btn" onclick="openModal('info-modal')">
+            <span class="nav-icon">ℹ️</span>
+            Info
+        </button>
+        <button class="nav-btn" onclick="openModal('about-modal')">
+            <span class="nav-icon">💜</span>
+            About
+        </button>
+    </div>
+    
+    <audio id="background-music" loop>
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjQ1LjEwMAAAAAAAAAAAAAAA" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        var appData = {
+            supporters: [],
+            goal: 5000,
+            prayers: [],
+            audioOn: false
+        };
+        
+        var modules = [
+            {
+                title: 'Biblical Basis',
+                content: '<h3>Old Testament</h3><p>Levites model (Numbers 18:21-24) - 11 tribes supported 1 tribe in ministry.</p><h3>Jesus Model</h3><p>Luke 8:1-3 - Women supported Jesus. "Worker deserves wages" (Luke 10:7)</p><h3>Paul</h3><p>1 Cor 9:14 - "Those who preach gospel should receive living from gospel"</p><p>Phil 4:15-19 - Philippians were faithful partners</p>'
+            },
+            {
+                title: 'Write Your Story',
+                content: '<h3>5-Part Structure</h3><p>1. BEFORE (30 sec) - Who you were</p><p>2. ENCOUNTER (45 sec) - God broke through</p><p>3. TRANSFORMATION (30 sec) - How God changed you</p><p>4. VISION (45 sec) - What you will do</p><p>5. INVITATION (30 sec) - How they join</p>'
+            },
+            {
+                title: 'Build Team',
+                content: '<h3>10-3-1 Rule</h3><p>Share with 10 → 3 interested → 1 commits</p><h3>5 Circles</h3><p>1. Core (family) - 70% yes</p><p>2. Close (friends) - 40% yes</p><p>3. Community - 20% yes</p><p>4. Connections - 10% yes</p><p>5. Cold - 5% yes</p>'
+            },
+            {
+                title: 'Keep Engaged',
+                content: '<h3>TOUCH System</h3><p>T - Thank within 48 hours</p><p>O - Observe their life</p><p>U - Update monthly</p><p>C - Connect quarterly</p><p>H - Honor annually</p>'
+            },
+            {
+                title: 'Overcome Fear',
+                content: '<h3>Truth</h3><p>92% appreciate being asked</p><p>No usually means "not now"</p><p>You offer blessing not burden</p><h3>When rejected:</h3><p>1. Thank them</p><p>2. Ask for prayer</p><p>3. Keep on newsletter</p>'
+            }
+        ];
+        
+        function loadData() {
+            var saved = localStorage.getItem('missionaryApp');
+            if (saved) {
+                appData = JSON.parse(saved);
+                updateDashboard();
+            }
+        }
+        
+        function saveData() {
+            localStorage.setItem('missionaryApp', JSON.stringify(appData));
+        }
+        
+        function showScreen(id) {
+            var screens = document.querySelectorAll('.screen');
+            for (var i = 0; i < screens.length; i++) {
+                screens[i].classList.remove('active');
+            }
+            document.getElementById(id).classList.add('active');
+            if (id === 'home-screen') updateDashboard();
+        }
+        
+        function navTo(screen, btn) {
+            showScreen(screen);
+            var btns = document.querySelectorAll('.nav-btn');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove('active');
+            }
+            btn.classList.add('active');
+        }
+        
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+        
+        function showResourceTab(tab) {
+            var tabs = document.querySelectorAll('.tab-content');
+            var btns = document.querySelectorAll('.tab-btn');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove('active');
+            }
+            document.getElementById(tab + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function openModule(index) {
+            var mod = modules[index];
+            document.getElementById('module-title').innerHTML = mod.title;
+            document.getElementById('module-content').innerHTML = mod.content;
+            showScreen('module-screen');
+        }
+        
+        function saveJournal() {
+            var text = document.getElementById('journal').value;
+            if (text) {
+                alert('Journal saved!');
+            }
+        }
+        
+        function addSupport() {
+            var name = document.getElementById('supporter-name').value;
+            var type = document.getElementById('support-type').value;
+            var amount = parseFloat(document.getElementById('support-amount').value) || 0;
+            
+            if (name) {
+                appData.supporters.push({
+                    name: name,
+                    type: type,
+                    amount: amount,
+                    date: new Date().toLocaleDateString()
+                });
+                saveData();
+                updateDashboard();
+                document.getElementById('supporter-name').value = '';
+                document.getElementById('support-amount').value = '';
+            }
+        }
+        
+        function setGoal() {
+            var goal = parseFloat(document.getElementById('goal-input').value);
+            if (goal > 0) {
+                appData.goal = goal;
+                saveData();
+                updateDashboard();
+            }
+        }
+        
+        function addPrayer() {
+            var name = document.getElementById('prayer-name').value || 'Anonymous';
+            var request = document.getElementById('prayer-request').value;
+            
+            if (request) {
+                appData.prayers.push({
+                    name: name,
+                    request: request,
+                    date: new Date().toLocaleDateString()
+                });
+                saveData();
+                updatePrayerWall();
+                document.getElementById('prayer-request').value = '';
+            }
+        }
+        
+        function updateDashboard() {
+            var total = 0;
+            var partners = 0;
+            
+            for (var i = 0; i < appData.supporters.length; i++) {
+                total += appData.supporters[i].amount || 0;
+                if (appData.supporters[i].type !== 'prayer') partners++;
+            }
+            
+            var percent = Math.round((total / appData.goal) * 100);
+            
+            document.getElementById('support-progress').style.width = percent + '%';
+            document.getElementById('support-progress').innerHTML = percent + '%';
+            document.getElementById('stat-raised').innerHTML = '$' + total;
+            document.getElementById('stat-goal').innerHTML = '$' + appData.goal;
+            document.getElementById('stat-partners').innerHTML = partners;
+            document.getElementById('stat-prayers').innerHTML = appData.prayers.length;
+            
+            document.getElementById('thermo-fill').style.height = Math.min(percent, 100) + '%';
+            document.getElementById('thermo-label').innerHTML = percent + '%';
+            
+            updateRecentPrayers();
+            updateSupportersList();
+        }
+        
+        function updateRecentPrayers() {
+            var html = '';
+            var start = Math.max(0, appData.prayers.length - 3);
+            for (var i = appData.prayers.length - 1; i >= start; i--) {
+                html += '<div class="prayer-item">' + appData.prayers[i].name + ': ' + 
+                        appData.prayers[i].request.substring(0, 50) + '...</div>';
+            }
+            document.getElementById('recent-prayers').innerHTML = html || '<p style="color:#999">No prayers yet</p>';
+        }
+        
+        function updateSupportersList() {
+            var html = '<div class="card"><h3>Recent Supporters</h3>';
+            var start = Math.max(0, appData.supporters.length - 5);
+            for (var i = appData.supporters.length - 1; i >= start; i--) {
+                var s = appData.supporters[i];
+                html += '<div class="prayer-item">' + s.name + ' - $' + s.amount + '</div>';
+            }
+            html += '</div>';
+            document.getElementById('supporters-list').innerHTML = html;
+        }
+        
+        function updatePrayerWall() {
+            var html = '';
+            for (var i = appData.prayers.length - 1; i >= 0; i--) {
+                var p = appData.prayers[i];
+                html += '<div class="card"><strong>' + p.name + '</strong> - ' + p.date + 
+                        '<p>' + p.request + '</p></div>';
+            }
+            document.getElementById('prayer-wall').innerHTML = html;
+        }
+        
+        window.onload = function() {
+            loadData();
+            
+            document.getElementById('audioBtn').onclick = function() {
+                var audio = document.getElementById('background-music');
+                if (appData.audioOn) {
+                    audio.pause();
+                    this.innerHTML = '🔇';
+                } else {
+                    audio.play();
+                    this.innerHTML = '🎵';
+                }
+                appData.audioOn = !appData.audioOn;
+            };
+        };
+    </script>
+</body>
+</html>
